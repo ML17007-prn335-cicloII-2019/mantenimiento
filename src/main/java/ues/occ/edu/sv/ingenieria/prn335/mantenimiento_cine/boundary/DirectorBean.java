@@ -5,8 +5,8 @@
  */
 package ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.boundary;
 
-import es.occ.edu.sv.ingenieria.prn335.cineData.entity.Director;
-import es.occ.edu.sv.ingenieria.prn335.cineData.entity.Pelicula;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Director;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Pelicula;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

@@ -5,8 +5,9 @@
  */
 package ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.boundary;
 
-import es.occ.edu.sv.ingenieria.prn335.cineData.entity.Pelicula;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Pelicula;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -17,6 +18,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Clasificacion;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Director;
+import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.ClasificacionFacade;
+import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.DirectorFacade;
 import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.PeliculaFacade;
 
 /**
@@ -25,53 +30,60 @@ import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.PeliculaFa
  */
 @Named(value = "peliculaBean")
 @ViewScoped
-public class peliculaBean implements Serializable{
+public class peliculaBean implements Serializable {
 
     @Inject
     PeliculaFacade pf;
     Pelicula peli;
     LazyDataModel<Pelicula> lazy;
+    @Inject
+    ClasificacionFacade cf;
+    @Inject
+    DirectorFacade df;
+    List<Director> listadirector = new ArrayList<>();
+    List<Clasificacion> listaclasificacion = new ArrayList<>();
+
     /**
      * Creates a new instance of peliculaBean
      */
     public peliculaBean() {
     }
-    
+
     @PostConstruct
-    public void llenarlazy(){
-    lazy=new LazyDataModel<Pelicula>() {
-        @Override
-        public Pelicula getRowData(String rowKey) {
-            try {
-                            Integer buscado = new Integer(rowKey);
-                            for (Pelicula reg : (List<Pelicula>) getWrappedData()) {
-                                if (reg.getIdPelicula().compareTo(buscado) == 0) {
-                                    return reg;
-                                }
-                            }
-                        } catch (Exception e) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+    public void llenarlazy() {
+        this.listadirector = df.findAll();
+        this.listaclasificacion = cf.findAll();
+        lazy = new LazyDataModel<Pelicula>() {
+            @Override
+            public Pelicula getRowData(String rowKey) {
+                try {
+                    Integer buscado = new Integer(rowKey);
+                    for (Pelicula reg : (List<Pelicula>) getWrappedData()) {
+                        if (reg.getIdPelicula().compareTo(buscado) == 0) {
+                            return reg;
                         }
-            return null;
                     }
-
-
-        @Override
-        public Object getRowKey(Pelicula object) {
-            if(object!=null){
-            return object.getIdPelicula();
+                } catch (Exception e) {
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+                }
+                return null;
             }
-            return null;
-                    }
 
-        @Override
-        public List<Pelicula> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-            this.setRowCount(pf.count());
-            return pf.findRange(first, pageSize);
-        }
-    };
+            @Override
+            public Object getRowKey(Pelicula object) {
+                if (object != null) {
+                    return object.getIdPelicula();
+                }
+                return null;
+            }
+
+            @Override
+            public List<Pelicula> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+                this.setRowCount(pf.count());
+                return pf.findRange(first, pageSize);
+            }
+        };
     }
-
 
     public LazyDataModel<Pelicula> getLazy() {
         return lazy;
@@ -88,32 +100,51 @@ public class peliculaBean implements Serializable{
     public void setPeli(Pelicula peli) {
         this.peli = peli;
     }
+
+    public void crear() {
+        if (peli != null) {
+            int tamanio = pf.count();
+            peli.setIdPelicula(tamanio + 1);
+            pf.create(peli);
+            limpiar();
+        }
+    }
+
+    public void actualizar() {
+        if (peli != null) {
+            pf.edit(peli);
+            limpiar();
+        }
+    }
+
+    public void eliminar() {
+        if (peli != null) {
+            pf.remove(peli);
+            limpiar();
+        }
+    }
+
+    public void limpiar() {
+        peli = new Pelicula();
+    }
+
+    public List<Director> getListadirector() {
+        return listadirector;
+    }
+
+    public void setListadirector(List<Director> listadirector) {
+        this.listadirector = listadirector;
+    }
+
+    public List<Clasificacion> getListaclasificacion() {
+        return listaclasificacion;
+    }
+
+    public void setListaclasificacion(List<Clasificacion> listaclasificacion) {
+        this.listaclasificacion = listaclasificacion;
+    }
+
     
-    public void crear(){
-    if(peli!=null){
-        int tamanio=pf.count();
-        peli.setIdPelicula(tamanio+1);
-        pf.create(peli);
-        limpiar();
-    }
-    }
     
-    public void actualizar(){
-    if(peli!=null){
-        pf.edit(peli);
-        limpiar();
-    }
-    }
-    
-    public void eliminar(){
-    if(peli!=null){
-        pf.remove(peli);
-        limpiar();
-    }
-    }
-    
-    public void limpiar(){
-    peli=new Pelicula();
-    }
     
 }

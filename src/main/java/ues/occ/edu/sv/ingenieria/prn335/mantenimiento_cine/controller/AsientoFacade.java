@@ -5,30 +5,32 @@
  */
 package ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller;
 
-import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Pelicula;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Asiento;
 
 /**
  *
  * @author jonathan
  */
 @Stateless
-@LocalBean
-public class PeliculaFacade extends AbstractFacade<Pelicula> {
+@LocalBean       
+public class AsientoFacade extends AbstractFacade<Asiento> {
 
     @PersistenceContext(unitName = "cinePU")
     private EntityManager em;
+
 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
-    public PeliculaFacade() {
-        super(Pelicula.class);
+
+    public AsientoFacade() {
+        super(Asiento.class);
     }
     
 }

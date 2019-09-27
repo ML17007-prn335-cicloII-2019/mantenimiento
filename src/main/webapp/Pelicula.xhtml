@@ -76,20 +76,24 @@
                     <p:outputLabel value="Duracion:" for="duracion" />
                     <p:inputText id="duracion" value="#{peliculaBean.peli.duracion}" title="Duracion" required="true" requiredMessage="The Duracion field is required."/>
                     <p:outputLabel value="FechaEstreno:" for="fechaEstreno" />
-                    <p:inputText id="fechaEstreno" value="#{peliculaBean.peli.fechaEstreno}" title="FechaEstreno" required="true" requiredMessage="The FechaEstreno field is required.">
+                    <p:inputText id="fechaEstreno" value="#{peliculaBean.peli.fechaEstreno}" title="FechaEstreno">
                         <f:convertDateTime pattern="MM/dd/yyyy" />
                     </p:inputText>
                     <p:outputLabel value="Sinopsis:" for="sinopsis" />
-                    <p:inputTextarea id="sinopsis" value="#{peliculaBean.peli.sinopsis}" title="Sinopsis" required="true" requiredMessage="The Sinopsis field is required."/>
+                    <p:inputTextarea id="sinopsis" value="#{peliculaBean.peli.sinopsis}" title="Sinopsis" />
                     <p:outputLabel value="IdClasificacion:" for="idClasificacion" />
-                    <p:selectOneMenu id="idClasificacion" value="#{peliculaBean.peli.idClasificacion.clasificacion}" required="true" requiredMessage="The IdClasificacion field is required.">
-                        <!-- TODO: update below reference to list of available items-->
-                        <f:selectItems value="#{fixme}"/>
+                    <p:selectOneMenu id="idClasificacion" value="#{peliculaBean.peli.idClasificacion}" >
+                        <f:selectItems value="#{peliculaBean.listaclasificacion}"
+                                       var="c"
+                                       itemLabel="#{c}"
+                                       itemValue="#{c.clasificacion}"/>
                     </p:selectOneMenu>
                     <p:outputLabel value="IdDirector:" for="idDirector" />
-                    <p:selectOneMenu id="idDirector" value="#{peliculaBean.peli.idDirector.nombre}" required="true" requiredMessage="The IdDirector field is required.">
-                        <!-- TODO: update below reference to list of available items-->
-                        <f:selectItems value="#{fixme}"/>
+                    <p:selectOneMenu id="idDirector" value="#{peliculaBean.peli.idDirector}" >
+                        <f:selectItems value="#{peliculaBean.listadirector}"
+                                       var="d"
+                                       itemLabel="#{d}"
+                                       itemValue="#{d.nombre+" "+d.apellido}"/>
                     </p:selectOneMenu>
                 </p:panelGrid>
     </ui:define>

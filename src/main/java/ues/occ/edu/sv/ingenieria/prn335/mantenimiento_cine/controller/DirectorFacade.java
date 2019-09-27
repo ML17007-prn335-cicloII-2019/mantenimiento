@@ -5,7 +5,7 @@
  */
 package ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller;
 
-import es.occ.edu.sv.ingenieria.prn335.cineData.entity.Director;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Director;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
