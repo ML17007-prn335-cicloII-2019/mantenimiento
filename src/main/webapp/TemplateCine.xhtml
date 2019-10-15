@@ -7,30 +7,21 @@
       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="./css/default.css"/>
-        <h:outputStylesheet name="./css/tableLayout.css"/>
-        <title id="titulo"></title>
+       <title>Cine app</title>
     </h:head>
 
     <h:body style="background: cadetblue; text-align: center">
+
         <f:view>
             <h:form id="tabla" >
-                <p:growl id="growl" showDetail="true" life="2000" />  
+                <p:growl id="growl" showDetail="true" life="1000"/>  
                 <ui:insert name="spacetable">
                 </ui:insert>
             </h:form>
     <h:form id="formulario" >
-        <h1><h:outputText value="Formulario"/></h1>
-        <p:panel style="background: cadetblue">
 
-            <p:panelGrid columns="2" style="margin: auto; animation: cubic-bezier">
                 <ui:insert name="frm"></ui:insert>
 
-            </p:panelGrid>
-            <hr></hr>
-            <ui:insert name="btns"></ui:insert>
-        </p:panel>
     </h:form>
 </f:view>
 </h:body>

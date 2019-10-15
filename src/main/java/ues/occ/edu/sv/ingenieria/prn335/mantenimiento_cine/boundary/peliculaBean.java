@@ -20,8 +20,12 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Clasificacion;
 import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Director;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Funcion;
+import ues.occ.edu.sv.ingenieria.prn335.cineData.entity.Genero;
 import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.ClasificacionFacade;
 import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.DirectorFacade;
+import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.FuncionFacade;
+import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.GeneroFacade;
 import ues.occ.edu.sv.ingenieria.prn335.mantenimiento_cine.controller.PeliculaFacade;
 
 /**
@@ -34,7 +38,7 @@ public class peliculaBean implements Serializable {
 
     @Inject
     PeliculaFacade pf;
-    Pelicula peli;
+    Pelicula peli=new Pelicula();
     LazyDataModel<Pelicula> lazy;
     @Inject
     ClasificacionFacade cf;
@@ -42,7 +46,16 @@ public class peliculaBean implements Serializable {
     DirectorFacade df;
     List<Director> listadirector = new ArrayList<>();
     List<Clasificacion> listaclasificacion = new ArrayList<>();
-
+    @Inject 
+    GeneroFacade gf;
+    @Inject
+    FuncionFacade ff;
+    List<Genero> listagenero = new ArrayList<>();
+    List<Funcion> listafuncion = new ArrayList<>();
+    Genero gener;
+    Funcion f;
+    Boolean visible=false;
+    String valor="Crear";
     /**
      * Creates a new instance of peliculaBean
      */
@@ -51,6 +64,8 @@ public class peliculaBean implements Serializable {
 
     @PostConstruct
     public void llenarlazy() {
+        this.listagenero=gf.findAll();
+        this.listafuncion=ff.findAll();
         this.listadirector = df.findAll();
         this.listaclasificacion = cf.findAll();
         lazy = new LazyDataModel<Pelicula>() {
@@ -106,21 +121,18 @@ public class peliculaBean implements Serializable {
             int tamanio = pf.count();
             peli.setIdPelicula(tamanio + 1);
             pf.create(peli);
-            limpiar();
         }
     }
 
     public void actualizar() {
         if (peli != null) {
             pf.edit(peli);
-            limpiar();
         }
     }
 
     public void eliminar() {
         if (peli != null) {
             pf.remove(peli);
-            limpiar();
         }
     }
 
@@ -144,7 +156,80 @@ public class peliculaBean implements Serializable {
         this.listaclasificacion = listaclasificacion;
     }
 
+    public List<Genero> getListagenero() {
+        return listagenero;
+    }
+
+    public void setListagenero(List<Genero> listagenero) {
+        this.listagenero = listagenero;
+    }
+
+    public List<Funcion> getListafuncion() {
+        return listafuncion;
+    }
+
+    public void setListafuncion(List<Funcion> listafuncion) {
+        this.listafuncion = listafuncion;
+    }
+
+    public Genero getGener() {
+        return gener;
+    }
+
+    public void setGener(Genero gener) {
+        this.gener = gener;
+    }
+
+    public Funcion getF() {
+        return f;
+    }
+
+    public void setF(Funcion f) {
+        this.f = f;
+    }
+
+    public void guardarfuncion(){
+    this.peli.getFuncionList().add(f);
+    this.actualizar();
+    }
     
+    public void guardargenero(){
+    this.peli.getGeneroList().add(gener);
+    this.actualizar();
+    }
+    
+    public void cambiar(){
+     if(this.visible==false){
+     this.valor="Cancelar";   
+     this.visible=true;
+     this.limpiar();
+     }else{
+         this.limpiar();
+     this.valor="Crear";    
+     this.visible=false;
+     }
+    }
+
+    public Boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+    
+    public void mostrar(){
+    this.visible=true;
+    this.valor="Cancelar";
+    }
     
     
 }

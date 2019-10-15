@@ -6,101 +6,184 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <ui:define name="spacetable">
-                <h1><h:outputText value="Mantenimiento Pelicula"/></h1>
-                <p:dataTable value="#{peliculaBean.lazy}" var="item"
-                             lazy="true"
-                             selectionMode="single"
-                             selection="#{peliculaBean.peli}"
-                             paginator="true"
-                             rows="6"
-                             draggableColumns="true"
-                             paginatorPosition="bottom"
-                             >
-                    <p:ajax event="rowSelect" update=":formulario" rendered=":formulario"/>
-                    <p:ajax event="rowUnselect" listener="#{directorBean.limpiar()}" update=":formulario"/>
-                    <p:column>
+    <ui:define name="spacetable" transient="true">
+
+
+        <p:dataTable value="#{peliculaBean.lazy}" var="item"
+                     lazy="true"
+                     selectionMode="single"
+                     selection="#{peliculaBean.peli}"
+                     paginator="true"
+                     rows="2"
+                     draggableColumns="true"
+                     paginatorPosition="bottom"
+                     >
+            <f:facet name="header">
+                    <h:outputText value="Tabla Pelicula"/>
+                </f:facet>
+            <p:ajax event="rowSelect" update=":formulario" rendered=":formulario" listener="#{peliculaBean.mostrar()}"/>
+            <p:ajax event="rowUnselect" listener="#{peliculaBean.cambiar()}" update=":formulario"/>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="IdPelicula"/>
+                </f:facet>
+                <h:outputText value="#{item.idPelicula}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Titulo"/>
+                </f:facet>
+                <h:outputText value="#{item.titulo}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Duracion"/>
+                </f:facet>
+                <h:outputText value="#{item.duracion}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="FechaEstreno"/>
+                </f:facet>
+                <h:outputText value="#{item.fechaEstreno}">
+                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                </h:outputText>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Sinopsis"/>
+                </f:facet>
+                <h:outputText value="#{item.sinopsis}" />
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Clasificacion"/>
+                </f:facet>
+                <h:outputText value="#{item.idClasificacion.clasificacion}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Director"/>
+                </f:facet>
+                <h:outputText value="#{item.idDirector.nombre} #{item.idDirector.apellido}"/>
+            </p:column>
+        </p:dataTable>
+
+    </ui:define>
+    <ui:define name="frm" >
+        <p:commandButton actionListener="#{peliculaBean.cambiar()}" value="#{peliculaBean.valor}" update="@this formulario :tabla"/> 
+        <p:tabView  style="background: cadetblue" rendered="#{peliculaBean.visible}" cache="false" >
+            <p:tab title="Generalidades">
+                <p:panel style="background: cadetblue" >
+
+                    <p:panelGrid columns="2" style="margin: auto">
                         <f:facet name="header">
-                            <h:outputText value="IdPelicula"/>
+                            <p:outputLabel value="Pelicula"/>
                         </f:facet>
-                        <h:outputText value="#{item.idPelicula}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Titulo"/>
-                        </f:facet>
-                        <h:outputText value="#{item.titulo}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Duracion"/>
-                        </f:facet>
-                        <h:outputText value="#{item.duracion}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="FechaEstreno"/>
-                        </f:facet>
-                        <h:outputText value="#{item.fechaEstreno}">
+                        <p:outputLabel value="IdPelicula:" for="idPelicula" />
+                        <p:inputText id="idPelicula" value="#{peliculaBean.peli.idPelicula}" title="IdPelicula" />
+                        <p:outputLabel value="Titulo:" for="titulo" />
+                        <p:inputText id="titulo" value="#{peliculaBean.peli.titulo}" title="Titulo" />
+                        <p:outputLabel value="Duracion:" for="duracion" />
+                        <p:inputText id="duracion" value="#{peliculaBean.peli.duracion}" title="Duracion" />
+                        <p:outputLabel value="FechaEstreno:" for="fechaEstreno" />
+                        <p:inputText id="fechaEstreno" value="#{peliculaBean.peli.fechaEstreno}" title="FechaEstreno">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
-                        </h:outputText>
+                        </p:inputText>
+                        <p:outputLabel value="Sinopsis:" for="sinopsis" />
+                        <p:inputTextarea id="sinopsis" value="#{peliculaBean.peli.sinopsis}" title="Sinopsis" maxlength="100"/>
+                        <p:outputLabel value="IdClasificacion:" for="idClasificacion" />
+                        <p:selectOneMenu id="idClasificacion" value="#{peliculaBean.peli.idClasificacion}" converter="clasificacionconverter">
+                            <f:selectItem itemLabel="Selecione Clasificacion" itemDisabled="true" />
+                            <f:selectItems value="#{peliculaBean.listaclasificacion}"
+                                           var="c"
+                                           itemLabel="#{c.clasificacion}"
+                                           itemValue="#{c}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="IdDirector:" for="idDirector" />
+                        <p:selectOneMenu id="idDirector" value="#{peliculaBean.peli.idDirector}" converter="directorconverter">
+                            <f:selectItem itemLabel="Selecione Director" itemDisabled="true" />
+                            <f:selectItems value="#{peliculaBean.listadirector}"
+                                           var="d"
+                                           itemLabel="#{d.nombre} #{d.apellido}"
+                                           itemValue="#{d}" />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                </p:panel>
+                <p:commandButton actionListener="#{peliculaBean.crear()}" value="Crear" update=":tabla formulario" />
+                <p:commandButton actionListener="#{peliculaBean.actualizar()}" value="Actualizar" update=":tabla :formulario" disabled="#{!not empty peliculaBean.peli.duracion}"/>
+                <p:commandButton actionListener="#{peliculaBean.eliminar()}" value="Eliminar" update=":tabla :formulario" disabled="#{!not empty peliculaBean.peli.duracion}" />
+            </p:tab>
+            <p:tab title="List Funcion" disabled="#{!not empty peliculaBean.peli.duracion}" >
+                <p:dataTable value="#{peliculaBean.peli.funcionList}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id Funcion"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idFuncion}"/>
                     </p:column>
                     <p:column>
                         <f:facet name="header">
-                            <h:outputText value="Sinopsis"/>
+                            <h:outputText value="Fecha"/>
                         </f:facet>
-                        <h:outputText value="#{item.sinopsis}" />
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Clasificacion"/>
-                        </f:facet>
-                        <h:outputText value="#{item.idClasificacion.clasificacion}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Director"/>
-                        </f:facet>
-                        <h:outputText value="#{item.idDirector.nombre}"/>
+                        <h:outputText value="#{item.fecha}"/>
                     </p:column>
                 </p:dataTable>
-    </ui:define>
-    <ui:define name="frm">
-   
-                <h1><h:outputText value="Pelicula"/></h1>
-                <p:panelGrid columns="2">
-                    <p:outputLabel value="IdPelicula:" for="idPelicula" />
-                    <p:inputText id="idPelicula" value="#{peliculaBean.peli.idPelicula}" title="IdPelicula" required="true" requiredMessage="The IdPelicula field is required."/>
-                    <p:outputLabel value="Titulo:" for="titulo" />
-                    <p:inputText id="titulo" value="#{peliculaBean.peli.titulo}" title="Titulo" required="true" requiredMessage="The Titulo field is required."/>
-                    <p:outputLabel value="Duracion:" for="duracion" />
-                    <p:inputText id="duracion" value="#{peliculaBean.peli.duracion}" title="Duracion" required="true" requiredMessage="The Duracion field is required."/>
-                    <p:outputLabel value="FechaEstreno:" for="fechaEstreno" />
-                    <p:inputText id="fechaEstreno" value="#{peliculaBean.peli.fechaEstreno}" title="FechaEstreno">
-                        <f:convertDateTime pattern="MM/dd/yyyy" />
-                    </p:inputText>
-                    <p:outputLabel value="Sinopsis:" for="sinopsis" />
-                    <p:inputTextarea id="sinopsis" value="#{peliculaBean.peli.sinopsis}" title="Sinopsis" />
-                    <p:outputLabel value="IdClasificacion:" for="idClasificacion" />
-                    <p:selectOneMenu id="idClasificacion" value="#{peliculaBean.peli.idClasificacion}" >
-                        <f:selectItems value="#{peliculaBean.listaclasificacion}"
-                                       var="c"
-                                       itemLabel="#{c}"
-                                       itemValue="#{c.clasificacion}"/>
-                    </p:selectOneMenu>
-                    <p:outputLabel value="IdDirector:" for="idDirector" />
-                    <p:selectOneMenu id="idDirector" value="#{peliculaBean.peli.idDirector}" >
-                        <f:selectItems value="#{peliculaBean.listadirector}"
-                                       var="d"
-                                       itemLabel="#{d}"
-                                       itemValue="#{d.nombre+" "+d.apellido}"/>
-                    </p:selectOneMenu>
-                </p:panelGrid>
-    </ui:define>
-    <ui:define name="btns">
-        <p:commandButton actionListener="#{peliculaBean.crear()}" value="Crear" update=":tabla formulario" />
-        <p:commandButton actionListener="#{peliculaBean.actualizar()}" value="Actualizar" update=":tabla :formulario"/>
-        <p:commandButton actionListener="#{peliculaBean.eliminar()}" value="Eliminar" update=":tabla :formulario" />
-                      
+                <p:panel >
+                    <p:panelGrid columns="2" style="text-align: center; border-bottom-color: transparent">
+                        <p:outputLabel value="Funcion:" for="funcion"/>
+                        <p:selectOneMenu id="funcion" value="#{peliculaBean.f}" title="seleccione..." converter="funcionconverter">
+                            <f:selectItems value="#{peliculaBean.listafuncion}" 
+                                           var="f"
+                                           itemLabel="#{f.fecha}"
+                                           itemValue="#{f}" />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{peliculaBean.guardarfuncion()}" value="Añadir" update=":tabla formulario" />
+
+                </p:panel>
+
+            </p:tab>
+            <p:tab title="List Genero" disabled="#{!not empty peliculaBean.peli.duracion}">
+                <p:dataTable value="#{peliculaBean.peli.generoList}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id Genero"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idGenero}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nombre"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nombre}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion"/>
+                        </f:facet>
+                        <h:outputText value="#{item.descripcion}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Estado"/>
+                        </f:facet>
+                        <h:outputText value="#{item.activo ? 'Activo':'Inactivo'}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:panel>
+                    <p:panelGrid columns="2" style="text-align: center">
+                        <p:selectOneMenu id="genero" value="#{peliculaBean.gener}" converter="generoconverter">
+                            <f:selectItems value="#{peliculaBean.listagenero}" 
+                                           var="g"
+                                           itemLabel="#{g.nombre}"
+                                           itemValue="#{g}" />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{peliculaBean.guardargenero()}" value="Añadir" update=":tabla formulario" />
+
+                </p:panel>
+            </p:tab>
+        </p:tabView>
     </ui:define>
 </ui:composition>

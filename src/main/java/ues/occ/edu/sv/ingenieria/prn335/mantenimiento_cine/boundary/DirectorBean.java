@@ -98,14 +98,12 @@ public class DirectorBean implements Serializable{
         int tamanio=df.count();
         d.setIdDirector(tamanio+1);
         df.create(d);
-        limpiar();
     }
     }
     
     public void actualizar(){
     if(d!=null){
         df.edit(d);
-        limpiar();
     }
     }
     
@@ -120,4 +118,8 @@ public class DirectorBean implements Serializable{
     d=new Director();
     }
 
+    
+    
+    
+    
 }
